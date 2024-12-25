@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/iv_story_photo"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <TextView
+        android:id="@+id/tv_story_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="249dp" />
+
+    <TextView
+        android:id="@+id/tv_story_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="222dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
