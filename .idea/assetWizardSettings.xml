@@ -18,7 +18,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:/$PROJECT_DIR$/../SDKandroidStudio/icons/material/materialicons/add_circle/baseline_add_circle_24.xml" />
+                                      <entry key="url" value="file:/$PROJECT_DIR$/../SDKandroidStudio/icons/material/materialicons/language/baseline_language_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -28,7 +28,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="baseline_add_circle_24" />
+                            <entry key="outputName" value="baseline_language_24" />
                             <entry key="sourceFile" value="D:\StoryApp" />
                           </map>
                         </option>
