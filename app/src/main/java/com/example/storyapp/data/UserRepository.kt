@@ -106,6 +106,7 @@ class UserRepository private constructor(
     }
 
     fun uploadStory(
+        token: String,
         imageFile: File,
         description: String
     ): LiveData<ResultState<UploadResponse>> = liveData {
@@ -118,7 +119,8 @@ class UserRepository private constructor(
             requestImageFile
         )
         try {
-            val response = apiService.uploadStory(multipartBody, requestBody)
+            val authToken = "Bearer $token"
+            val response = apiService.uploadStory(authToken, multipartBody, requestBody)
             emit(ResultState.Success(response))
         } catch (e: HttpException) {
             Log.e("uploadStory", "HTTP Exception: ${e.message}")
