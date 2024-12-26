@@ -23,6 +23,8 @@ import com.example.storyapp.data.UserPreference
 import com.example.storyapp.data.UserRepository
 import com.example.storyapp.loginwithanimation.databinding.ActivityCameraMainBinding
 import com.example.storyapp.view.main.ResultState
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -110,6 +112,18 @@ class CameraMain : AppCompatActivity() {
             return
         }
 
+        // Ambil token dari sesi pengguna
+        val userRepository = UserRepository.getInstance(
+            ApiConfig.getApiService(),
+            UserPreference.getInstance(dataStore)
+        )
+        val token = runBlocking {
+            userRepository.getSession().firstOrNull()?.token
+        } ?: run {
+            showToast("Token is not available.")
+            return
+        }
+
         // Ambil file dari URI
         val imageFile = currentImageUri?.let { uri ->
             contentResolver.openFileDescriptor(uri, "r")?.use { descriptor ->
@@ -135,11 +149,7 @@ class CameraMain : AppCompatActivity() {
         }
 
         // Upload melalui UserRepository
-        val userRepository = UserRepository.getInstance(
-            ApiConfig.getApiService(),
-            UserPreference.getInstance(dataStore)
-        )
-        userRepository.uploadStory(imageFile, description).observe(this) { resultState ->
+        userRepository.uploadStory(token, imageFile, description).observe(this) { resultState ->
             when (resultState) {
                 is ResultState.Loading -> {
                     showToast("Uploading...")
