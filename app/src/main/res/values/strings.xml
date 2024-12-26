@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">Story Apps</string>
+    <string name="signup">Daftar</string>
+    <string name="login">Masuk</string>
+    <string name="message_welcome_page">Berbagai kumpulan story menarik hadir untuk anda!</string>
+    <string name="title_welcome_page">Selamat datang di Story Apps!</string>
+    <string name="title_signup_page">Lengkapi data dirimu di bawah ini ya</string>
+    <string name="email">Email</string>
+    <string name="password">Kata Sandi</string>
+    <string name="message_login_page">Masukkan dulu datamu ya</string>
+    <string name="title_login_page">Datang dan bersenang-senanglah!</string>
+    <string name="name">Nama</string>
+    <string name="message_main_page">Selamat Datang di  Story Apps.</string>
+    <string name="greeting">Hello %1$s,</string>
+
+    <string name="camera_x">CameraX</string>
+    <string name="camera">Kamera</string>
+    <string name="gallery">Galeri</string>
+    <string name="upload">Unggah</string>
+    <string name="empty_image_warning">Silakan masukkan berkas gambar terlebih dahulu.</string>
+    <string name="logout">Keluar</string>
+    <string name="add">Tambah</string>
+    <string name="welcome">Selamat Datang</string>
+    <string name="stories">Ini cerita ceritamu</string>
+    <string name="logouts">Keluar</string>
+    <string name="add_story">Tambahkan ceritamu</string>
+    <string name="hallo">Hallo Gais!!!</string>
+
+    <string name="story_not_found">Story tidak ditemukan.</string>
+    <string name="story_detail_not_available">Detail story tidak tersedia.</string>
+    <string name="no_name">Tidak ada Nama</string>
+    <string name="no_description">Tidak ada Deskripsi</string>
+    <string name="no_time">Tidak ada waktu</string>
+    <string name="no_id">Tidak ada ID</string>
+    <string name="latitude">Latitude: %1$.2f</string>
+    <string name="longitude">Longitude: %1$.2f</string>
+    <string name="created_at">Dibuat pada: %1$s</string>
+
+</resources>

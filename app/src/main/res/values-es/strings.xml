@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Story Apps</string>
+    <string name="signup">Inscríbete</string>
+    <string name="login">Iniciar sesión</string>
+    <string name="message_welcome_page">¡Una variedad de interesantes colecciones de cuentos están aquí para ti!</string>
+    <string name="title_welcome_page">¡Bienvenido a Story Apps!</string>
+    <string name="title_signup_page">Completa tus datos a continuación</string>
+    <string name="email">Correo electrónico</string>
+    <string name="password">Contraseña</string>
+    <string name="message_login_page">Introduzca primero sus datos</string>
+    <string name="title_login_page">¡Ven a divertirte!</string>
+    <string name="name">Nombre</string>
+    <string name="message_main_page">Bienvenido a Story Apps.</string>
+    <string name="greeting">Hola %1$s,</string>
+
+    <string name="camera_x">CámaraX</string>
+    <string name="camera">Cámara</string>
+    <string name="gallery">Galería</string>
+    <string name="upload">Cargar</string>
+    <string name="empty_image_warning">Por favor, inserta primero un archivo de imagen</string>
+    <string name="logout">Cerrar sesión</string>
+    <string name="add">Añadir</string>
+    <string name="welcome">Bienvenida</string>
+    <string name="stories">Esta es tu historia</string>
+    <string name="logouts">Cerrar sesión</string>
+    <string name="add_story">Añade tu historia</string>
+    <string name="hallo">¡Hola Gais!!!</string>
+
+    <string name="story_not_found">Historia no encontrada.</string>
+    <string name="story_detail_not_available">Detalles de la historia no disponibles</string>
+    <string name="no_name">Sin nombre</string>
+    <string name="no_description">No hay descripción</string>
+    <string name="no_time">Sin hora</string>
+    <string name="no_id">Sin ID</string>
+    <string name="latitude">Latitud: %1$.2f</string>
+    <string name="longitude">Longitud: %1$.2f</string>
+    <string name="created_at">Creado el: %1$s</string>
+</resources>

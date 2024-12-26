@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">Story Apps</string>
+    <string name="signup">サインアップ</string>
+    <string name="login">サインイン</string>
+    <string name="message_welcome_page">様々な面白いストーリー集がここにあります！</string>
+    <string name="title_welcome_page">ストーリーアプリへようこそ！</string>
+    <string name="title_signup_page">以下に詳細を入力してください</string>
+    <string name="email">メールアドレス</string>
+    <string name="password">パスワード</string>
+    <string name="message_login_page">最初にデータを入力してください</string>
+    <string name="title_login_page">遊びに来てね</string>
+    <string name="name">名前</string>
+    <string name="message_main_page">ストーリーアプリへようこそ</string>
+    <string name="greeting">こんにちは %1$s,</string>
+
+    <string name="camera_x">カメラX</string>
+    <string name="camera">カメラ</string>
+    <string name="gallery">ギャラリー</string>
+    <string name="upload">アップロード</string>
+    <string name="empty_image_warning">最初に画像ファイルを挿入してください</string>
+    <string name="logout">ログアウト</string>
+    <string name="add">追加</string>
+    <string name="welcome">ようこそ</string>
+    <string name="stories">これはあなたの物語です</string>
+    <string name="logouts">ログアウト</string>
+    <string name="add_story">ストーリーを追加する</string>
+    <string name="hallo">ハローガイ!!!</string>
+
+    <string name="story_not_found">ストーリーが見つかりません。</string>
+    <string name="story_detail_not_available">ストーリーの詳細がありません</string>
+    <string name="no_name">名前がありません</string>
+    <string name="no_description">説明がありません</string>
+    <string name="no_time">時間がありません</string>
+    <string name="no_id">IDはありません</string>
+    <string name="latitude">緯度： 1$.2f</string>
+    <string name="longitude">経度： 1$.2f</string>
+    <string name="created_at">作成日： 1$s</string>
+
+</resources>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Story Apps</string>
+    <string name="signup">Sign up</string>
+    <string name="login">Sign in</string>
+    <string name="message_welcome_page">A variety of interesting story collections are here for you! </string>
+    <string name="title_welcome_page">Welcome to Story Apps!</string>
+    <string name="title_signup_page">Complete your details below</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="message_login_page">Enter your data first</string>
+    <string name="title_login_page">Come and have fun! </string>
+    <string name="name">Name</string>
+    <string name="message_main_page">Welcome to Story Apps.</string>
+    <string name="greeting">Hello %1$s,</string>
+
+    <string name="camera_x">CameraX</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="upload">Upload</string>
+    <string name="empty_image_warning">Please insert an image file first.</string>
+    <string name="logout">Log out</string>
+    <string name="add">Add</string>
+    <string name="welcome">Welcome</string>
+    <string name="stories">This is your story</string>
+    <string name="logouts">Log out</string>
+    <string name="add_story">Add your story</string>
+    <string name="hallo">Hallo Gais!!!</string>
+
+    <string name="story_not_found">Story not found.</string>
+    <string name="story_detail_not_available">Story details not available.</string>
+    <string name="no_name">No Name</string>
+    <string name="no_description">No Description</string>
+    <string name="no_time">No time</string>
+    <string name="no_id">No ID</string>
+    <string name="latitude">Latitude: %1$.2f</string>
+    <string name="longitude">Longitude: %1$.2f</string>
+    <string name="created_at">Created on: %1$s</string>
+</resources>
