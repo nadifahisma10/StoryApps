@@ -7,6 +7,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
@@ -15,8 +17,12 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.storyapp.api.ListStoryItem
+import com.example.storyapp.di.ResultState
 import com.example.storyapp.loginwithanimation.databinding.ActivityMainBinding
+import com.example.storyapp.loginwithanimation.R
 import com.example.storyapp.view.camera.CameraMain
+import com.example.storyapp.view.maps.AboutActivity
+import com.example.storyapp.view.maps.FullMapsActivity
 import com.example.storyapp.view.welcome.WelcomeActivity
 
 class MainActivity : AppCompatActivity() {
@@ -34,24 +40,22 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
 
         setupView()
         setupAction()
         playAnimation()
 
-        // Mengamati loading state
         viewModel.isLoading.observe(this) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
 
-        // Mengamati pesan error
         viewModel.errorMessage.observe(this) { message ->
             message?.let {
                 Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
             }
         }
 
-        // Data RecyclerView
         val storyList: MutableList<ListStoryItem> = mutableListOf()
         val uploadedStory = getUploadedStory()
         if (uploadedStory != null) {
@@ -75,11 +79,9 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.getSession().observe(this) { user ->
             if (!user.isLogin) {
-                // Jika user belum login, arahkan ke WelcomeActivity
                 startActivity(Intent(this, WelcomeActivity::class.java))
                 finish()
             } else {
-                // Panggil getStories dengan token
                 viewModel.getStories(token = "Bearer ${user.token}")
             }
         }
@@ -101,6 +103,7 @@ class MainActivity : AppCompatActivity() {
                         ).show()
                     } else {
                         storyAdapter.submitList(result.data.listStory)
+                        println("Data: ${result.data.listStory}")
                     }
                 }
 
@@ -133,7 +136,27 @@ class MainActivity : AppCompatActivity() {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
             )
         }
-        supportActionBar?.hide()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_about -> {
+                val intent = Intent(this, AboutActivity::class.java)
+                startActivity(intent)
+                return true
+            }
+            R.id.action_maps -> {
+                val intent = Intent(this, FullMapsActivity::class.java)
+                startActivity(intent)
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun getUploadedStory(): Pair<String, Uri>? {
@@ -142,12 +165,10 @@ class MainActivity : AppCompatActivity() {
         val (description, uriString, timestampString) = storyData.split("|")
         val timestamp = timestampString.toLong()
 
-        // Periksa apakah cerita masih dalam waktu 1 jam
-        if (System.currentTimeMillis() - timestamp <= 3600_000) { // 1 jam = 3600000 ms
+        if (System.currentTimeMillis() - timestamp <= 3600_000) {
             return Pair(description, Uri.parse(uriString))
         }
 
-        // Hapus data jika waktu lebih dari 1 jam
         sharedPreferences.edit().remove("last_uploaded_story").apply()
         return null
     }
