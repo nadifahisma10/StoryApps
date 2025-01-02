@@ -150,11 +150,6 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
                 return true
             }
-            R.id.action_maps -> {
-                val intent = Intent(this, FullMapsActivity::class.java)
-                startActivity(intent)
-                return true
-            }
         }
         return super.onOptionsItemSelected(item)
     }
