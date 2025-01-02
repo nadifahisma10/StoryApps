@@ -8,7 +8,7 @@ import com.example.storyapp.api.LoginResponse
 import com.example.storyapp.api.SignupResponse
 import com.example.storyapp.api.StoryResponse
 import com.example.storyapp.api.UploadResponse
-import com.example.storyapp.view.main.ResultState
+import com.example.storyapp.di.ResultState
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MediaType.Companion.toMediaType
@@ -85,7 +85,6 @@ class UserRepository private constructor(
             val errorResponse = e.response()?.errorBody()?.string()
             Log.e("getAllStories", "Raw Error Response: $errorResponse")
             if (errorResponse != null && errorResponse.startsWith("<html>")) {
-                // Deteksi HTML dan tampilkan pesan error yang lebih spesifik
                 return ResultState.Error("Server error: Unexpected HTML response. Please contact support.")
             } else {
                 try {
