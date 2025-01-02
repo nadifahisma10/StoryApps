@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.example.storyapp.api.StoryResponse
 import com.example.storyapp.data.UserModel
 import com.example.storyapp.data.UserRepository
+import com.example.storyapp.di.ResultState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -17,6 +18,9 @@ class MainViewModel(private val repository: UserRepository) : ViewModel() {
 
     private val _stories = MutableLiveData<ResultState<StoryResponse>?>()
     val stories: LiveData<ResultState<StoryResponse>?> = _stories
+
+    suspend fun login(email: String, password: String) = repository.login(email, password)
+    suspend fun signup(name: String, email: String, password: String) = repository.signup(name, email, password)
 
     fun getSession(): LiveData<UserModel> {
         return repository.getSession().asLiveData()
