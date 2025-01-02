@@ -7,62 +7,97 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.example.storyapp.view.main.ViewModelFactory
 import com.example.storyapp.data.UserModel
 import com.example.storyapp.loginwithanimation.databinding.ActivityLoginBinding
+import com.example.storyapp.loginwithanimation.R
 import com.example.storyapp.view.main.MainActivity
-import com.example.storyapp.view.main.ResultState
+import com.example.storyapp.di.ResultState
+import com.example.storyapp.view.main.ViewModelFactory
 
 class LoginActivity : AppCompatActivity() {
-    private val viewModel by viewModels<LoginViewModel> {
-        ViewModelFactory.getInstance(this)
-    }
+    private lateinit var emailText: CustomEditTextEmail
+    private lateinit var passwordText: CustomEditTextPassword
+    private lateinit var myButton: CustomButton
     private lateinit var binding: ActivityLoginBinding
+    private val viewModel: LoginViewModel by viewModels { ViewModelFactory.getInstance(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        emailText = binding.emailEditText
+        passwordText = binding.passwordEditText
+        myButton = binding.loginButton
+
+        emailText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                setButton()
+            }
+            override fun afterTextChanged(s: Editable) {}
+        })
+
+        passwordText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                setButton()
+            }
+            override fun afterTextChanged(s: Editable) {}
+        })
+
         setupView()
-        setupAction()
         playAnimation()
-        setupPasswordValidation()
-        initObservers()
+
+        myButton.setOnClickListener { login() }
     }
 
-    private fun initObservers() {
-        viewModel.loginResult.observe(this) { resultActivity ->
-            when (resultActivity) {
+    private fun setupView() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.insetsController?.hide(WindowInsets.Type.statusBars())
+        } else {
+            window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        }
+        supportActionBar?.hide()
+    }
+
+    private fun login() {
+        val email = emailText.text.toString()
+        val password = passwordText.text.toString()
+
+        viewModel.login(email, password)
+
+        viewModel.loginResult.observe(this) { resultState ->
+            when (resultState) {
                 is ResultState.Loading -> {
                     binding.progressBar.visibility = View.VISIBLE
                 }
                 is ResultState.Success -> {
-                    binding.progressBar.visibility = View.GONE
-                    viewModel.saveSession(UserModel(binding.emailEditText.text.toString(), resultActivity.data.loginResult?.token.orEmpty()))
-                    AlertDialog.Builder(this).apply {
-                        setTitle("Yeah!")
-                        setMessage("Anda berhasil login! Upload story mu sekarang dan selamat bersenang-senang")
-                        setPositiveButton("Lanjut") { _, _ ->
-                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                            startActivity(intent)
-                            finish()
-                        }
-                        create()
-                        show()
+                    val token = resultState.data.loginResult?.token
+                    if (token != null) {
+                        Log.d("LoginActivity", "Token: $token")
+                        viewModel.saveSession(UserModel(email, token, password, isLogin = true))
+                        setTitle(getString(R.string.login_success_title))
+                        showToast(getString(R.string.login_success_message))
+                        showLoading(false)
+                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                        startActivity(intent)
+                    } else {
+                        showToast(getString(R.string.login_failed_message))
+                        showLoading(false)
                     }
                 }
                 is ResultState.Error -> {
                     binding.progressBar.visibility = View.GONE
-                    Toast.makeText(this, resultActivity.error, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, resultState.error, Toast.LENGTH_SHORT).show()
                 }
 
                 else -> {
@@ -73,59 +108,18 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupView() {
-        @Suppress("DEPRECATION")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.insetsController?.hide(WindowInsets.Type.statusBars())
-        } else {
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN
-            )
-        }
-        supportActionBar?.hide()
+    private fun setButton() {
+        val emailResult = emailText.text.toString().isNotEmpty() && emailText.error == null
+        val passwordResult = passwordText.text.toString().isNotEmpty() && passwordText.error == null
+        myButton.isEnabled = emailResult && passwordResult
     }
 
-    private fun setupPasswordValidation() {
-        // Menambahkan TextWatcher untuk validasi password
-        binding.passwordEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s != null && s.length < 8) {
-                    setError("Password tidak boleh kurang dari 8 karakter")
-                } else {
-                    clearError()
-                }
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
-    // Fungsi untuk menampilkan pesan error
-    private fun setError(message: String) {
-        binding.passwordEditTextLayout.error = message
-    }
-
-    // Fungsi untuk menghapus pesan error
-    private fun clearError() {
-        binding.passwordEditTextLayout.error = null
-    }
-
-    private fun setupAction() {
-        binding.loginButton.setOnClickListener {
-            val email = binding.emailEditText.text.toString()
-            val password = binding.passwordEditText.text.toString()
-
-            // Memastikan password memiliki panjang minimal 8 karakter sebelum melanjutkan
-            if (password.length < 8) {
-                setError("Password tidak boleh kurang dari 8 karakter")
-                return@setOnClickListener
-            }
-
-            viewModel.login(email, password)
-        }
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun playAnimation() {
