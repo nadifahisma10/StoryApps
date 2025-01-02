@@ -2,6 +2,7 @@ package com.example.storyapp.view.signup
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -11,111 +12,107 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.example.storyapp.loginwithanimation.R
 import com.example.storyapp.loginwithanimation.databinding.ActivitySignupBinding
-import com.example.storyapp.view.main.ResultState
+import com.example.storyapp.view.login.CustomButton
+import com.example.storyapp.view.login.CustomEditTextEmail
+import com.example.storyapp.view.login.CustomEditTextName
+import com.example.storyapp.view.login.CustomEditTextPassword
+import com.example.storyapp.di.ResultState
 import com.example.storyapp.view.main.ViewModelFactory
+import com.example.storyapp.view.welcome.WelcomeActivity
 
 class SignupActivity : AppCompatActivity() {
+    private lateinit var nameText: CustomEditTextName
+    private lateinit var emailText: CustomEditTextEmail
+    private lateinit var passwordText: CustomEditTextPassword
+    private lateinit var myButton: CustomButton
     private lateinit var binding: ActivitySignupBinding
-    private val viewModel by viewModels<SignupViewModel> {
-        ViewModelFactory.getInstance(this)
-    }
+    private val viewModel: SignupViewModel by viewModels { ViewModelFactory.getInstance(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignupBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        nameText = binding.nameEditText
+        emailText = binding.emailEditText
+        passwordText = binding.passwordEditText
+        myButton = binding.signupButton
+
+        emailText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                setButton()
+            }
+            override fun afterTextChanged(s: Editable) {}
+        })
+
+        passwordText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                setButton()
+            }
+            override fun afterTextChanged(s: Editable) {}
+        })
+
         setupView()
-        setupAction()
         playAnimation()
-        setupPasswordValidation()
-        initObservers()
+
+        myButton.setOnClickListener { register() }
     }
 
-    private fun initObservers() {
-        viewModel.registerResult.observe(this) { resultActivity ->
-            when (resultActivity) {
+    private fun register() {
+        val name = nameText.text.toString()
+        val email = emailText.text.toString()
+        val password = passwordText.text.toString()
+
+        viewModel.signup(name, email, password)
+
+        viewModel.registerResult.observe(this) { resultState ->
+            when (resultState) {
                 is ResultState.Loading -> {
-                    binding.progressBar.visibility = View.VISIBLE
+                    showLoading(true)
                 }
                 is ResultState.Success -> {
-                    binding.progressBar.visibility = View.GONE
-                    val email = binding.emailEditText.text.toString()
-                    AlertDialog.Builder(this).apply {
-                        setTitle("Yeah!")
-                        setMessage("Akun dengan $email sudah jadi nih. Selamat bersenang-senang!")
-                        setPositiveButton("Lanjut") { _, _ ->
-                            finish()
-                        }
-                        create()
-                        show()
-                    }
+                    setTitle(getString(R.string.login_success_title))
+                    showToast("Akun dengan $email sudah jadi nih. Selamat bersenang-senang!")
+                    showLoading(false)
+                    val intent = Intent(this@SignupActivity, WelcomeActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(intent)
                 }
                 is ResultState.Error -> {
-                    binding.progressBar.visibility = View.GONE
-                    Toast.makeText(this, resultActivity.error, Toast.LENGTH_SHORT).show()
+                    showToast(resultState.error)
+                    showLoading(false)
                 }
             }
         }
     }
 
     private fun setupView() {
-        @Suppress("DEPRECATION")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.insetsController?.hide(WindowInsets.Type.statusBars())
         } else {
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN
-            )
+            window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
         }
         supportActionBar?.hide()
     }
 
-    private fun setupPasswordValidation() {
-        // Menambahkan TextWatcher untuk validasi password
-        binding.passwordEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s != null && s.length < 8) {
-                    setError("Password tidak boleh kurang dari 8 karakter")
-                } else {
-                    clearError()
-                }
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
+    private fun setButton() {
+        val nameResult = nameText.text.toString().isNotEmpty() && nameText.error == null
+        val emailResult = emailText.text.toString().isNotEmpty() && emailText.error == null
+        val passwordResult = passwordText.text.toString().isNotEmpty() && passwordText.error == null
+        myButton.isEnabled = nameResult && emailResult && passwordResult
     }
 
-    // Fungsi untuk menampilkan pesan error
-    private fun setError(message: String) {
-        binding.passwordEditTextLayout.error = message
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
-    // Fungsi untuk menghapus pesan error
-    private fun clearError() {
-        binding.passwordEditTextLayout.error = null
-    }
-
-    private fun setupAction() {
-        binding.signupButton.setOnClickListener {
-            val name = binding.nameEditText.text.toString()
-            val email = binding.emailEditText.text.toString()
-            val password = binding.passwordEditText.text.toString()
-
-            // Memastikan password memiliki panjang minimal 8 karakter sebelum melanjutkan
-            if (password.length < 8) {
-                setError("Password tidak boleh kurang dari 8 karakter")
-                return@setOnClickListener
-            }
-
-            viewModel.signup(name, email, password)
-        }
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun playAnimation() {
